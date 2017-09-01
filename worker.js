@@ -1,4 +1,5 @@
 var Queue = require('bull');
+const https = require('https');
 
 var queue = new Queue('lunch', process.env.REDIS_URL);
 
@@ -26,14 +27,10 @@ queue.process(function(job, done){
     team,
   } = job.data;
 
-  var options = {
-    host: 'https://shem.lib.id/lunchtime@dev/webhook/',
-    port: 80,
-    path: `channel/?channel=${channel}&team_id=${team}`,
-    method: 'POST'
-  };
+  const url = `https://shem.lib.id/lunchtime@dev/webhook/channel/?channel=${channel}&team_id=${team}`;
+  console.log(url);
 
-  http.request(options, function(res) {
+  https.get(url, (res) => {
     console.log('STATUS: ' + res.statusCode);
     console.log('HEADERS: ' + JSON.stringify(res.headers));
     res.setEncoding('utf8');
@@ -43,6 +40,7 @@ queue.process(function(job, done){
     done();
   }).end();
 
+console.log('end');
 
 });
 console.log('listenting');
