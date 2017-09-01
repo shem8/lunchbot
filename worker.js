@@ -1,6 +1,6 @@
 var Queue = require('bull');
 
-var audioQueue = new Queue('audio transcoding', {redis: {port: 6379, host: '127.0.0.1', password: 'foobared'}}); // Specify Redis connection using object
+var audioQueue = new Queue('audio transcoding', process.env.REDIS_URL); 
 
 audioQueue.process(function(job, done){
   // transcode audio asynchronously and report progress
