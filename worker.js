@@ -1,20 +1,26 @@
 var Queue = require('bull');
 
-var audioQueue = new Queue('audio transcoding', process.env.REDIS_URL); 
+var queue = new Queue('lunch', process.env.REDIS_URL); 
 
-audioQueue.process(function(job, done){
+console.log('setup');
+queue.process(function(job, done){
   // transcode audio asynchronously and report progress
-  job.progress(42);
+//  job.progress(42);
 
   // call done when finished
-  done();
+//  done();
 
   // or give a error if error
-  done(new Error('error transcoding'));
+//  done(new Error('error transcoding'));
 
   // or pass it a result
-  done(null, { samplerate: 48000 /* etc... */ });
+//  done(null, { samplerate: 48000 /* etc... */ });
 
   // If the job throws an unhandled exception it is also handled correctly
-  throw new Error('some unexpected error');
+//  throw new Error('some unexpected error');
+  console.log('test');
+  console.log(job.data);
+  done();
+
 });
+console.log('listenting');
