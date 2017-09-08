@@ -43,7 +43,7 @@ queue.process(function(job, done){
   //   done();
   // }).end();
 
-  lib.shem.webhook({
+  lib.shem.webhook.channel({
     channel: channel,
     team_id: team,
     type: type,
