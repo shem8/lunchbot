@@ -48,7 +48,7 @@ queue.on('error', function(error) {
   console.log(`error: ${error}`);
 })
 
-queue..on('failed', function(job, err){
+queue.on('failed', function(job, err){
   console.log(`failed: ${err}`);
 })
 
