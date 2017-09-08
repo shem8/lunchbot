@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bull": "^3.0.0"
+    "bull": "^3.0.0",
+    "lib": "^3.0.1"
   }
 }
