@@ -43,4 +43,13 @@ queue.process(function(job, done){
 console.log('end');
 
 });
+
+queue.on('error', function(error) {
+  console.log(`error: ${error}`);
+})
+
+queue..on('failed', function(job, err){
+  console.log(`failed: ${err}`);
+})
+
 console.log('listenting');
