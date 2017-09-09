@@ -43,7 +43,7 @@ queue.process(function(job, done){
   //   done();
   // }).end();
 
-  lib.shem.webhook({
+  lib.shem.lunchtime['@dev'].webhook({
     channel: channel,
     team_id: team,
     type: type,
