@@ -42,12 +42,23 @@ finishQ.process(function(job, done){
   handleMsg(job, done, 'finish');
 });
 
-queue.on('error', function(error) {
+triggerQ.on('error', function(error) {
   console.log(`error: ${error}`);
-})
-
-queue.on('failed', function(job, err){
+});
+triggerQ.on('failed', function(job, err){
   console.log(`failed: ${err}`);
-})
+});
+reminderQ.on('error', function(error) {
+  console.log(`error: ${error}`);
+});
+reminderQ.on('failed', function(job, err){
+  console.log(`failed: ${err}`);
+});
+finishQ.on('error', function(error) {
+  console.log(`error: ${error}`);
+});
+finishQ.on('failed', function(job, err){
+  console.log(`failed: ${err}`);
+});
 
 console.log('listenting');
