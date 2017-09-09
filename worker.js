@@ -50,9 +50,11 @@ queue.process(function(job, done){
   }, function (err, result) {
     if (err) {
       console.log('err: ' + err);
+      done();
       return;
     }
     console.log('result: ' + result);
+    done();
   });
 });
 
