@@ -2,10 +2,12 @@ const Queue = require('bull');
 const https = require('https');
 const lib = require('lib');
 
-var queue = new Queue('lunch', process.env.REDIS_URL);
+var triggerQ = new Queue('trigger', process.env.REDIS_URL);
+var reminderQ = new Queue('reminder', process.env.REDIS_URL);
+var finishQ = new Queue('finish', process.env.REDIS_URL);
 
-console.log('setup');
-queue.process(function(job, done){
+function handleMsg(job, done, q) {
+  console.log(q);
   console.log(job.data);
   const {
     msg,
@@ -13,35 +15,6 @@ queue.process(function(job, done){
     team,
     type,
   } = job.data;
-
-  // jsonObject = JSON.stringify({
-  //   type : type,
-  // });
-  //
-  // // prepare the header
-  // var postheaders = {
-  //     'Content-Type' : 'application/json',
-  //     'Content-Length' : Buffer.byteLength(jsonObject, 'utf8')
-  // };
-  //
-  // // the post options
-  // var optionspost = {
-  //     host : 'shem.lib.id',
-  //     port : 443,
-  //     path : `/lunchtime@dev/webhook/channel/?channel=${channel}&team_id=${team}`,
-  //     method : 'POST',
-  //     headers : postheaders
-  // };
-  //
-  // https.request(optionspost, (res) => {
-  //   console.log('STATUS: ' + res.statusCode);
-  //   console.log('HEADERS: ' + JSON.stringify(res.headers));
-  //   res.setEncoding('utf8');
-  //   res.on('data', function (chunk) {
-  //     console.log('BODY: ' + chunk);
-  //   });
-  //   done();
-  // }).end();
 
   lib.shem.lunchtime['@dev'].webhook({
     channel: channel,
@@ -56,6 +29,17 @@ queue.process(function(job, done){
     console.log('result: ' + result);
     done();
   });
+}
+
+console.log('setup');
+triggerQ.process(function(job, done){
+  handleMsg(job, done, 'trigger');
+});
+reminderQ.process(function(job, done){
+  handleMsg(job, done, 'reminder');
+});
+finishQ.process(function(job, done){
+  handleMsg(job, done, 'finish');
 });
 
 queue.on('error', function(error) {
