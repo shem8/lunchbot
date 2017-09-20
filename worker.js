@@ -1,6 +1,7 @@
 const Queue = require('bull');
 const https = require('https');
 const lib = require('lib');
+const models = require("./models.js");
 
 var triggerQ = new Queue('trigger', process.env.REDIS_URL);
 var reminderQ = new Queue('reminder', process.env.REDIS_URL);
@@ -33,13 +34,38 @@ function handleMsg(job, done, q) {
 
 console.log('setup');
 triggerQ.process(function(job, done){
+  const {
+    channel,
+    team,
+  } = job.data;
+  models.lunch.create({
+    team: 'team',
+    channel: 'channel',
+  });
+
   handleMsg(job, done, 'trigger');
 });
+
 reminderQ.process(function(job, done){
   handleMsg(job, done, 'reminder');
 });
+
 finishQ.process(function(job, done){
-  handleMsg(job, done, 'finish');
+  const {
+    channel,
+    team,
+  } = job.data;
+  models.lunch.update({
+    finished: true
+  },{
+    where: {
+      team: team,
+      channel: channel,
+      finished: false,
+    }
+  }).then(() => {
+    handleMsg(job, done, 'finish');
+  })
 });
 
 triggerQ.on('error', function(error) {
