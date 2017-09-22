@@ -59,9 +59,18 @@ triggerQ.process(function(job, done){
 });
 
 reminderQ.process(function(job, done){
-  models.user.count().then(count => {
-    handleMsg(job, done, `lunch almost here, ${count} already joined!`);
-  });
+    models.lunch.findOne({
+      where: {
+        team: team,
+        channel: channel,
+        finished: false,
+      }
+    }).then(lunch => {
+      lunch.getUsers({ attributes: ['user'] }).then(users => {
+        const count = [...new Set(users.map(u => u.user))].length;
+        handleMsg(job, done, `lunch almost here, ${count} already joined!`);
+      });
+    });
 });
 
 finishQ.process(function(job, done){
