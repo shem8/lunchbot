@@ -39,8 +39,8 @@ triggerQ.process(function(job, done){
     team,
   } = job.data;
   models.lunch.create({
-    team: 'team',
-    channel: 'channel',
+    team: team,
+    channel: channel,
   });
 
   handleMsg(job, done, 'trigger');
