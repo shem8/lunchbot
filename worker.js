@@ -7,20 +7,32 @@ var triggerQ = new Queue('trigger', process.env.REDIS_URL);
 var reminderQ = new Queue('reminder', process.env.REDIS_URL);
 var finishQ = new Queue('finish', process.env.REDIS_URL);
 
-function handleMsg(job, done, q) {
-  console.log(q);
+function split(array) {
+  array.sort(() => Math.random() * 2 - 1);
+  return array.reduce(function(result, value, index, array) {
+    if (index % 2 === 0) {
+      result.push(array.slice(index, index + 2));
+    }
+    return result;
+  }, []);
+}
+
+function getStr(array) {
+  return array.map(i => `@${i[0]} <=> @${i[1]}`)
+}
+
+function handleMsg(job, done, msg) {
+  console.log(msg);
   console.log(job.data);
   const {
-    msg,
     channel,
     team,
-    type,
   } = job.data;
 
   lib.shem.lunchtime['@dev'].webhook({
     channel: channel,
     team_id: team,
-    type: type,
+    msg: msg,
   }, function (err, result) {
     if (err) {
       console.log('err: ' + err);
@@ -43,11 +55,13 @@ triggerQ.process(function(job, done){
     channel: channel,
   });
 
-  handleMsg(job, done, 'trigger');
+  handleMsg(job, done, `lunch day! use \`/lunch_join\` for joining lunch`);
 });
 
 reminderQ.process(function(job, done){
-  handleMsg(job, done, 'reminder');
+  models.user.count().then(count => {
+    handleMsg(job, done, `lunch almost here, ${count} already joined!`);
+  });
 });
 
 finishQ.process(function(job, done){
@@ -55,17 +69,23 @@ finishQ.process(function(job, done){
     channel,
     team,
   } = job.data;
-  models.lunch.update({
-    finished: true
-  },{
+
+  models.lunch.findOne({
     where: {
       team: team,
       channel: channel,
       finished: false,
     }
-  }).then(() => {
-    handleMsg(job, done, 'finish');
-  })
+  }).then(lunch => {
+    console.log(lunch);
+    lunch.finished = true;
+    lunch.save();
+    lunch.getUsers({ attributes: ['user'] }).then(users => {
+      splits = split([...new Set(users.map(u => u.user))]);
+      handleMsg(job, done, `Here we go: ${getStr(splits)}`);
+    });
+  });
+
 });
 
 triggerQ.on('error', function(error) {
