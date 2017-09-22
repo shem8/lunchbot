@@ -18,7 +18,7 @@ function split(array) {
 }
 
 function getStr(array) {
-  return array.map(i => `@${i[0]} <=> @${i[1]}`)
+  return array.map(i => `<@${i[0]}> <=> <@${i[1]}>`)
 }
 
 function handleMsg(job, done, msg) {
