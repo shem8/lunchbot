@@ -20,8 +20,7 @@ const Lunch = sequelize.define('lunch', {
 });
 
 const Person = sequelize.define('lunch', {
-  user_id: Sequelize.STRING,
-  user_name: Sequelize.STRING,
+  user: Sequelize.STRING,
 });
 
 Person.belongsTo(Lunch);
