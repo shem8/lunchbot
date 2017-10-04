@@ -18,7 +18,7 @@ function split(array) {
 }
 
 function getStr(array) {
-  return array.map(i => `<@${i[0]}> <=> <@${i[1]}>`)
+  return array.map(i => `<@${i[0]}> <=> <@${i[1]}>`).join('\n');
 }
 
 function handleMsg(job, done, msg) {
@@ -68,7 +68,11 @@ reminderQ.process(function(job, done){
     }).then(lunch => {
       lunch.getUsers({ attributes: ['user'] }).then(users => {
         const count = [...new Set(users.map(u => u.user))].length;
-        handleMsg(job, done, `lunch almost here, ${count} already joined!`);
+        if (count == 0) {
+          handleMsg(job, done, `lunch almost here, but no one joined yet!`);
+        } else {
+          handleMsg(job, done, `lunch almost here, ${count} already joined!`);
+        }
       });
     });
 });
@@ -90,8 +94,13 @@ finishQ.process(function(job, done){
     lunch.finished = true;
     lunch.save();
     lunch.getUsers({ attributes: ['user'] }).then(users => {
-      splits = split([...new Set(users.map(u => u.user))]);
-      handleMsg(job, done, `Here we go: ${getStr(splits)}`);
+      const users = [...new Set(users.map(u => u.user))];
+      if (users.length <= 1) {
+        handleMsg(job, done, 'Not enough people joined lunch =(');
+      } else {
+        splits = split(users);
+        handleMsg(job, done, `Here we go:\n${getStr(splits)}`);
+      }
     });
   });
 
