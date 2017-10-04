@@ -3,15 +3,22 @@ const https = require('https');
 const lib = require('lib');
 const models = require("./models.js");
 
-var triggerQ = new Queue('trigger', process.env.REDIS_URL);
-var reminderQ = new Queue('reminder', process.env.REDIS_URL);
-var finishQ = new Queue('finish', process.env.REDIS_URL);
+const triggerQ = new Queue('trigger', process.env.REDIS_URL);
+const reminderQ = new Queue('reminder', process.env.REDIS_URL);
+const finishQ = new Queue('finish', process.env.REDIS_URL);
+
+const GROUP_SIZE = 3;
 
 function split(array) {
   array.sort(() => Math.random() * 2 - 1);
   return array.reduce(function(result, value, index, array) {
-    if (index % 2 === 0) {
-      result.push(array.slice(index, index + 2));
+    if (index % GROUP_SIZE === 0) {
+      if (index == array.length - (GROUP_SIZE + 1)) {
+        result.push(array.slice(index, index + (GROUP_SIZE - 1)));
+        result.push(array.slice(index + (GROUP_SIZE - 1), index + (GROUP_SIZE + 1)));
+      } else if (index != array.length - 1) {
+        result.push(array.slice(index, index + GROUP_SIZE));
+      }
     }
     return result;
   }, []);
