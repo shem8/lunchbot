@@ -10,7 +10,7 @@ if (!process.env.SLACK_CLIENT_ID || !process.env.SLACK_CLIENT_SECRET || !process
 const bot_options = {
     clientId: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
-    scopes: process.env.SLACK_OAUTH_SCOPE,
+    scopes: ['bot','commands'],
 };
 
 if (process.env.REDIS_URL) {
