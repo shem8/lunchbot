@@ -1,10 +1,6 @@
-// SLACK_APP_NAME=lunch-time
-// SLACK_OAUTH_SCOPE=bot,commands,chat:write:bot,chat:write:user,files:write:user,channels:history,users:read
-// SLACK_REDIRECT=https://shem.lib.id/lunchtime@dev/auth/
-// BOT_USER_ACCESS_TOKEN=xoxb-235033916868-iIFolOPaxclHOK9V2dIUQ4aR
-
-/* Uses the slack button feature to offer a real time bot to multiple teams */
-var Botkit = require('botkit');
+const Botkit = require('botkit');
+const join = require('./lunch_join.js');
+const start = require('./lunch_start.js');
 
 if (!process.env.SLACK_CLIENT_ID || !process.env.SLACK_CLIENT_SECRET || !process.env.PORT || !process.env.SLACK_VERIFICATION_TOKEN) {
       console.log('Error: Specify CLIENT_ID, CLIENT_SECRET, VERIFICATION_TOKEN and PORT in environment');
@@ -36,8 +32,13 @@ controller.setupWebserver(process.env.PORT, function (err, webserver) {
 //
 
 controller.on('slash_command', function (slashCommand, message) {
-    console.log(message);
-    switch (message.command) {
+  console.log(message);
+  switch (message.command) {
+    case '/lunch_join':
+      join(message, slashCommand);
+    case '/lunch_start':
+      start(message, slashCommand);
+      return;
         case "/cancel_lunch": //handle the `/echo` slash command. We might have others assigned to this app too!
             // The rules are simple: If there is no text following the command, treat it as though they had requested "help"
             // Otherwise just echo back to them what they sent us.

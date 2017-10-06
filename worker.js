@@ -36,19 +36,12 @@ function handleMsg(job, done, msg) {
     team,
   } = job.data;
 
-  lib.shem.lunchtime['@dev'].webhook({
+  slack.chat.postMessage({
+    token: process.env.BOT_USER_ACCESS_TOKEN,
     channel: channel,
-    team_id: team,
-    msg: msg,
-  }, function (err, result) {
-    if (err) {
-      console.log('err: ' + err);
-      done();
-      return;
-    }
-    console.log('result: ' + result);
-    done();
+    text: msg,
   });
+  done();
 }
 
 console.log('setup');
