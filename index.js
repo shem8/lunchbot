@@ -14,7 +14,7 @@ const bot_options = {
 };
 
 if (process.env.REDIS_URL) {
-    const redisStorage = require('botkit-storage-redis')({redis_url: process.env.REDIS_URL});
+    const redisStorage = require('botkit-storage-redis')({url: process.env.REDIS_URL});
     bot_options.storage = redisStorage;
 } else {
     bot_options.json_file_store = './db_slackbutton_slash_command/';
