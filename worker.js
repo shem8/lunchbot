@@ -31,15 +31,18 @@ function getStr(array) {
 
 function handleMsg(job, done, msg) {
   const {
+    team,
     channel,
   } = job.data;
 
-  slack.chat.postMessage({
-    token: process.env.BOT_USER_ACCESS_TOKEN,
-    channel: channel,
-    text: msg,
+  bot_options.storage.teams.get(team, (err, { token }) => {
+    slack.chat.postMessage({
+      token: token,
+      channel: channel,
+      text: msg,
+    });
+    done();
   });
-  done();
 }
 
 triggerQ.process(function(job, done){
