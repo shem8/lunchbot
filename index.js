@@ -36,6 +36,7 @@ controller.on('slash_command', function (slashCommand, message) {
   switch (message.command) {
     case '/lunch_join':
       join(message, slashCommand);
+      return;
     case '/lunch_start':
       start(message, slashCommand);
       return;
