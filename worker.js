@@ -2,7 +2,8 @@ const Queue = require('bull');
 const https = require('https');
 const lib = require('lib');
 const slack = require('slack');
-const models = require("./models.js");
+const models = require('./models.js');
+const slackbot = require('./slackbot.js');
 
 const triggerQ = new Queue('trigger', process.env.REDIS_URL);
 const reminderQ = new Queue('reminder', process.env.REDIS_URL);
@@ -35,7 +36,7 @@ function handleMsg(job, done, msg) {
     channel,
   } = job.data;
 
-  bot_options.storage.teams.get(team, (err, { token }) => {
+  slackbot.storage.teams.get(team, (err, { token }) => {
     slack.chat.postMessage({
       token: token,
       channel: channel,

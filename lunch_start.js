@@ -1,6 +1,7 @@
 const Queue = require('bull');
 const slack = require('slack');
 const models = require('./models.js');
+const slackbot = require('./slackbot.js');
 
 const triggerQ = new Queue('trigger', process.env.REDIS_URL);
 const reminderQ = new Queue('reminder', process.env.REDIS_URL);
@@ -71,7 +72,7 @@ function substractMinute(minute, hour, day, sub) {
 module.exports = (message, slashCommand) => {
   const [dayStr, timeStr] = message.text.split(' ');
 
-  bot_options.storage.teams.get(message.team_id, (err, { token }) => {
+  slackbot.storage.teams.get(message.team_id, (err, { token }) => {
     slack.users.info({
       token: token,
       user: message.user_id,
