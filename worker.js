@@ -1,6 +1,7 @@
 const Queue = require('bull');
 const https = require('https');
 const lib = require('lib');
+const slack = require('slack');
 const models = require("./models.js");
 
 const triggerQ = new Queue('trigger', process.env.REDIS_URL);
