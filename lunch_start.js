@@ -71,7 +71,6 @@ function substractMinute(minute, hour, day, sub) {
 module.exports = (message, slashCommand) => {
   const [dayStr, timeStr] = message.text.split(' ');
 
-  console.log(process.env.BOT_USER_ACCESS_TOKEN);
   slack.users.info({
     token: process.env.BOT_USER_ACCESS_TOKEN,
     user: message.user_id,

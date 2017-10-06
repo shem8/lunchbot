@@ -30,11 +30,8 @@ function getStr(array) {
 }
 
 function handleMsg(job, done, msg) {
-  console.log(msg);
-  console.log(job.data);
   const {
     channel,
-    team,
   } = job.data;
 
   slack.chat.postMessage({
@@ -45,7 +42,6 @@ function handleMsg(job, done, msg) {
   done();
 }
 
-console.log('setup');
 triggerQ.process(function(job, done){
   const {
     channel,
@@ -125,5 +121,3 @@ finishQ.on('error', function(error) {
 finishQ.on('failed', function(job, err){
   console.log(`failed: ${err}`);
 });
-
-console.log('listenting');
