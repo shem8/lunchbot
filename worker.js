@@ -101,11 +101,11 @@ finishQ.process(function(job, done){
     lunch.finished = true;
     lunch.save();
     lunch.getUsers({ attributes: ['user'] }).then(users => {
-      const users = [...new Set(users.map(u => u.user))];
-      if (users.length <= 1) {
+      const userNames = [...new Set(users.map(u => u.user))];
+      if (userNames.length <= 1) {
         handleMsg(job, done, 'Not enough people joined lunch =(');
       } else {
-        splits = split(users);
+        splits = split(userNames);
         handleMsg(job, done, `Here we go:\n${getStr(splits)}`);
       }
     });

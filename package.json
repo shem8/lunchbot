@@ -1,14 +1,16 @@
 {
-  "name": "lunchhandler",
+  "name": "lunch-time",
   "version": "1.0.0",
   "description": "",
-  "main": "worker.js",
+  "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "botkit": "^0.6.3",
     "bull": "^3.0.0",
     "lib": "^3.0.1",
     "pg": "^7.3.0",
