@@ -7,13 +7,20 @@ if (!process.env.SLACK_CLIENT_ID || !process.env.SLACK_CLIENT_SECRET || !process
       process.exit(1);
 }
 
-var controller = Botkit.slackbot({
-  json_file_store: './db_slackbutton_slash_command/',
-}).configureSlackApp({
-  clientId: process.env.SLACK_CLIENT_ID,
-  clientSecret: process.env.SLACK_CLIENT_SECRET,
-  scopes: process.env.SLACK_OAUTH_SCOPE,
-});
+const bot_options = {
+    clientId: process.env.SLACK_CLIENT_ID,
+    clientSecret: process.env.SLACK_CLIENT_SECRET,
+    scopes: process.env.SLACK_OAUTH_SCOPE,
+};
+
+if (process.env.MONGO_URI) {
+    const redisStorage = require('botkit-storage-redis')({redis_url: process.env.REDIS_URL});
+    bot_options.storage = redisStorage;
+} else {
+    bot_options.json_file_store = './db_slackbutton_slash_command/';
+}
+
+const controller = Botkit.slackbot(bot_options);
 
 controller.setupWebserver(process.env.PORT, function (err, webserver) {
   controller.createWebhookEndpoints(controller.webserver);
