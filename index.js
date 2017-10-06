@@ -13,7 +13,7 @@ const bot_options = {
     scopes: process.env.SLACK_OAUTH_SCOPE,
 };
 
-if (process.env.MONGO_URI) {
+if (process.env.REDIS_URL) {
     const redisStorage = require('botkit-storage-redis')({redis_url: process.env.REDIS_URL});
     bot_options.storage = redisStorage;
 } else {
