@@ -60,6 +60,11 @@ triggerQ.process(function(job, done){
 });
 
 reminderQ.process(function(job, done){
+    const {
+      channel,
+      team,
+    } = job.data;
+  
     models.lunch.findOne({
       where: {
         team: team,
