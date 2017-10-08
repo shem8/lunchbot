@@ -11,9 +11,9 @@ const bot_options = {
     scopes: ['bot','commands'],
 };
 
-if (process.env.REDIS_URL) {
-    const redisStorage = require('botkit-storage-redis')({url: process.env.REDIS_URL});
-    bot_options.storage = redisStorage;
+if (process.env.DATABASE_URL) {
+    const storage = require('botkit-storage-mysql')(process.env.DATABASE_URL);
+    bot_options.storage = storage;
 } else {
     bot_options.json_file_store = './db_slackbutton_slash_command/';
 }
