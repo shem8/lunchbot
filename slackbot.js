@@ -11,8 +11,8 @@ const bot_options = {
     scopes: ['bot','commands'],
 };
 
-if (process.env.DATABASE_URL) {
-    const storage = require('botkit-storage-mysql')(process.env.DATABASE_URL);
+if (process.env.MONGODB_URI) {
+    const storage = require('botkit-storage-mongo')({ mongoUri: process.env.MONGODB_URI });
     bot_options.storage = storage;
 } else {
     bot_options.json_file_store = './db_slackbutton_slash_command/';

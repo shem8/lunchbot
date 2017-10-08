@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "botkit": "^0.6.3",
-    "botkit-storage-mysql": "^1.0.1",
+    "botkit-storage-mongo": "^1.0.7",
     "bull": "^3.0.0",
     "lib": "^3.0.1",
     "pg": "^7.3.0",
