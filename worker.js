@@ -96,7 +96,9 @@ finishQ.process(function(job, done){
       finished: false,
     }
   }).then(lunch => {
-    console.log(lunch);
+    if (!lunch) {
+      return;
+    }
     lunch.finished = true;
     lunch.save();
     lunch.getUsers({ attributes: ['user'] }).then(users => {
