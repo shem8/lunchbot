@@ -31,6 +31,7 @@ function getStr(array) {
 }
 
 function handleMsg(job, done, msg) {
+  console.log(job);
   const {
     team,
     channel,
@@ -42,7 +43,7 @@ function handleMsg(job, done, msg) {
       channel: channel,
       text: msg,
     });
-    done();
+    // done();
   });
 }
 
@@ -64,7 +65,6 @@ reminderQ.process(function(job, done){
       channel,
       team,
     } = job.data;
-  
     models.lunch.findOne({
       where: {
         team: team,
@@ -72,6 +72,9 @@ reminderQ.process(function(job, done){
         finished: false,
       }
     }).then(lunch => {
+      if (!lunch) {
+        return;
+      }
       lunch.getUsers({ attributes: ['user'] }).then(users => {
         const count = [...new Set(users.map(u => u.user))].length;
         if (count == 0) {
