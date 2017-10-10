@@ -2,7 +2,7 @@ const db = require('./models/index.js');
 
 module.exports = (message, slashCommand) => {
 
-  db.Lunch.findOne({
+  db.LunchTemplate.findOne({
     where: {
       team: message.team_id,
       channel: message.channel_id,
