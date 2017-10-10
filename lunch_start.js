@@ -70,8 +70,8 @@ function substractMinute(minute, hour, day, sub) {
 
 function calcCrons(text, tz_offset) {
     const [dayStr, timeStr] = text.split(' ');
-    const day = parseDay(dayStr);
-    const time = parseHour(timeStr);
+    let day = parseDay(dayStr);
+    let time = parseHour(timeStr);
     [ time.hour, day ] = substractHour(time.hour, day, tz_offset / SECONDS_IN_HOUR);
 
     const [ triggerHour, triggerDay ] = substractHour(time.hour, day, TRIGGER_BEFORE_HOUR);
