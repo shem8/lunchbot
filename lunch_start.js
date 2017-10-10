@@ -1,6 +1,7 @@
 const Queue = require('bull');
 const slack = require('slack');
 const slackbot = require('./slackbot.js');
+const db = require('./models/index.js');
 
 const triggerQ = new Queue('trigger', process.env.REDIS_URL);
 const reminderQ = new Queue('reminder', process.env.REDIS_URL);
