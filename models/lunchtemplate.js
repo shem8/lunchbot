@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
     classMethods: {
       associate: function(models) {
         models.LunchTemplate.hasMany(models.Lunch);
-        models.Lunch.belongsTo(models.LunchTemplate);
       }
     }
   });
