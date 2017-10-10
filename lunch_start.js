@@ -72,7 +72,7 @@ function calcCrons(text, tz_offset) {
     const [dayStr, timeStr] = text.split(' ');
     const day = parseDay(dayStr);
     const time = parseHour(timeStr);
-    [ time.hour, day ] = substractHour(time.hour, day, data.user.tz_offset / SECONDS_IN_HOUR);
+    [ time.hour, day ] = substractHour(time.hour, day, tz_offset / SECONDS_IN_HOUR);
 
     const [ triggerHour, triggerDay ] = substractHour(time.hour, day, TRIGGER_BEFORE_HOUR);
     const [ reminderMinute, reminderHour, reminderDay ] =
