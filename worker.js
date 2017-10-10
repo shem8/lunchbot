@@ -51,7 +51,7 @@ triggerQ.process(function(job, done){
   } = job.data;
 
   db.Lunch.create({
-    lunch_template_id: lunch_template_id
+    LunchTemplateId: lunch_template_id
   }).then((lunch) => {
     handleMsg(lunch, done, `lunch day! use \`/lunch_join\` for joining lunch`);
   });
@@ -64,7 +64,7 @@ reminderQ.process(function(job, done){
 
     db.Lunch.findOne({
       where: {
-        lunch_template_id: lunch_template_id,
+        LunchTemplateId: lunch_template_id,
         finished: false,
       }
     }).then(lunch => {
@@ -90,7 +90,7 @@ finishQ.process(function(job, done){
   } = job.data;
   db.Lunch.findOne({
     where: {
-      lunch_template_id: lunch_template_id,
+      LunchTemplateId: lunch_template_id,
       finished: false,
     }
   }).then(lunch => {
