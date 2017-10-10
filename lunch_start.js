@@ -68,8 +68,48 @@ function substractMinute(minute, hour, day, sub) {
     return [ retMinute, retHour, retDay ];
 }
 
+function calcCrons(text, tz_offset) {
+    const [dayStr, timeStr] = text.split(' ');
+    const day = parseDay(dayStr);
+    const time = parseHour(timeStr);
+    [ time.hour, day ] = substractHour(time.hour, day, data.user.tz_offset / SECONDS_IN_HOUR);
+
+    const [ triggerHour, triggerDay ] = substractHour(time.hour, day, TRIGGER_BEFORE_HOUR);
+    const [ reminderMinute, reminderHour, reminderDay ] =
+      substractMinute(time.minute, time.hour, day, REMINDER_BEFORE_MINUTE);
+
+    const triggerKey = `0 ${time.minute} ${triggerHour} * * ${triggerDay}`;
+    const reminderKey = `0 ${reminderMinute} ${reminderHour} * * ${reminderDay}`;
+    const finishKey = `0 ${time.minute} ${time.hour} * * ${day}`;
+
+    return [triggerKey, reminderKey, finishKey];
+}
+
+function scheduleCrons(template, [triggerKey, reminderKey, finishKey], slashCommand) {
+  const trigger = triggerQ.add(data = {
+    lunch_template_id: template.id,
+  },
+  opts = {
+    repeat: {cron: triggerKey},
+  });
+  const reminder = reminderQ.add(data = {
+    lunch_template_id: template.id,
+  },
+  opts = {
+    repeat: {cron: reminderKey},
+  });
+
+  const finish = finishQ.add(data = {
+    lunch_template_id: template.id,
+  },
+  opts = {
+    repeat: {cron: finishKey},
+  });
+
+  return Promise.all([trigger, reminder, finish]);
+}
+
 module.exports = (message, slashCommand) => {
-  const [dayStr, timeStr] = message.text.split(' ');
 
   slackbot.storage.teams.get(message.team_id, (err, { token }) => {
     slack.users.info({
@@ -82,46 +122,20 @@ module.exports = (message, slashCommand) => {
         slashCommand.replyPrivate(message, 'something went wrong');
         return;
       }
-      var day = parseDay(dayStr);
-      var time = parseHour(timeStr);
-      [ time.hour, day ] = substractHour(time.hour, day, data.user.tz_offset / SECONDS_IN_HOUR);
 
-      const [ triggerHour, triggerDay ] = substractHour(time.hour, day, TRIGGER_BEFORE_HOUR);
-      const trigger = triggerQ.add(data = {
-        channel: message.channel_id,
+      const keys = calcCrons(message.text, data.user.tz_offset);
+
+      db.LunchTemplate.create({
         team: message.team_id,
-        type: 'trigger'
-      },
-      opts = {
-        repeat: {cron: `0 ${time.minute} ${triggerHour} * * ${triggerDay}`},
-      });
-      console.log(`trigger: 0 ${time.minute} ${triggerHour} * * ${triggerDay}`)
-
-      const [ reminderMinute, reminderHour, reminderDay ] =
-        substractMinute(time.minute, time.hour, day, REMINDER_BEFORE_MINUTE);
-      const reminder = reminderQ.add(data = {
         channel: message.channel_id,
-        team: message.team_id,
-        type: 'reminder'
-      },
-      opts = {
-        repeat: {cron: `0 ${reminderMinute} ${reminderHour} * * ${reminderDay}`},
-      });
-      console.log(`reminder: 0 ${reminderMinute} ${reminderHour} * * ${reminderDay}`)
+        keys: keys,
+        args: message.text,
+      }).then((template) => {
 
-      const finish = finishQ.add(data = {
-        channel: message.channel_id,
-        team: message.team_id,
-        type: 'finish'
-      },
-      opts = {
-        repeat: {cron: `0 ${time.minute} ${time.hour} * * ${day}`},
-      });
-      console.log(`finish: 0 ${time.minute} ${time.hour} * * ${day}`)
-
-      Promise.all([trigger, reminder, finish]).then(function(resolve, reject){
-        slashCommand.replyPublic(message,
-          `Great, I'll be responsible for managing the lunch time on ${timeStr}, ${dayStr}`);
+        scheduleCrons(template, keys).then(() => {
+          slashCommand.replyPublic(message,
+            `Great, I'll be responsible for managing the lunch time on ${timeStr}, ${dayStr}`);
+        });
       });
     });
   });

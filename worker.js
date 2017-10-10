@@ -30,57 +30,55 @@ function getStr(array) {
   return array.map(i => `<@${i[0]}> <=> <@${i[1]}>`).join('\n');
 }
 
-function handleMsg(job, done, msg) {
-  console.log(job);
-  const {
-    team,
-    channel,
-  } = job.data;
+function handleMsg(lunch, done, msg) {
+  console.log(lunch);
 
-  slackbot.storage.teams.get(team, (err, { token }) => {
-    slack.chat.postMessage({
-      token: token,
-      channel: channel,
-      text: msg,
+  lunch.getLunchTemlpate().then((template) => {
+    slackbot.storage.teams.get(lunch.LunchTemplate.team, (err, { token }) => {
+      slack.chat.postMessage({
+        token: token,
+        channel: lunch.LunchTemplate.channel,
+        text: msg,
+      });
+      done();
     });
-    // done();
   });
 }
 
 triggerQ.process(function(job, done){
   const {
-    channel,
-    team,
+    lunch_template_id,
   } = job.data;
-  db.Lunch.create({
-    team: team,
-    channel: channel,
-  });
 
-  handleMsg(job, done, `lunch day! use \`/lunch_join\` for joining lunch`);
+  db.Lunch.create({
+    template_id: lunch_template_id
+  }).then((lunch) => {
+    handleMsg(lunch, done, `lunch day! use \`/lunch_join\` for joining lunch`);
+  });
 });
 
 reminderQ.process(function(job, done){
     const {
-      channel,
-      team,
+      lunch_template_id,
     } = job.data;
+
     db.Lunch.findOne({
       where: {
-        team: team,
-        channel: channel,
+        lunch_template_id: lunch_template_id,
         finished: false,
       }
     }).then(lunch => {
       if (!lunch) {
+        //Unsubscribe?
+        done();
         return;
       }
       lunch.getUsers({ attributes: ['user'] }).then(users => {
         const count = [...new Set(users.map(u => u.user))].length;
         if (count == 0) {
-          handleMsg(job, done, `lunch almost here, but no one joined yet!`);
+          handleMsg(lunch, done, `lunch almost here, but no one joined yet!`);
         } else {
-          handleMsg(job, done, `lunch almost here, ${count} already joined!`);
+          handleMsg(lunch, done, `lunch almost here, ${count} already joined!`);
         }
       });
     });
@@ -88,18 +86,17 @@ reminderQ.process(function(job, done){
 
 finishQ.process(function(job, done){
   const {
-    channel,
-    team,
+    lunch_template_id,
   } = job.data;
-
   db.Lunch.findOne({
     where: {
-      team: team,
-      channel: channel,
+      lunch_template_id: lunch_template_id,
       finished: false,
     }
   }).then(lunch => {
     if (!lunch) {
+      //Unsubscribe?
+      done();
       return;
     }
     lunch.finished = true;

@@ -1,23 +1,21 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Lunches', {
+    return queryInterface.createTable('LunchTemplates', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      finished: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      team: {
+        type: Sequelize.STRING
       },
-      lunch_template_id: {
-        type: Sequelize.BIGINT,
-        references: {
-          model: "LunchTemplates",
-          key: "id"
-        }
+      channel: {
+        type: Sequelize.STRING
+      },
+      keys: {
+        type: Sequelize.ARRAY(Sequelize.STRING)
       },
       createdAt: {
         allowNull: false,
@@ -30,6 +28,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Lunches');
+    return queryInterface.dropTable('LunchTemplates');
   }
 };
