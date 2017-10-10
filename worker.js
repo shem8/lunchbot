@@ -33,7 +33,7 @@ function getStr(array) {
 function handleMsg(lunch, done, msg) {
   console.log(lunch);
 
-  lunch.getLunchTemlpate().then((template) => {
+  lunch.getLunchTemplate().then((template) => {
     slackbot.storage.teams.get(lunch.LunchTemplate.team, (err, { token }) => {
       slack.chat.postMessage({
         token: token,
