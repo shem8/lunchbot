@@ -1,7 +1,7 @@
-const models = require('./models.js');
+const db = require('./models/index.js');
 
 module.exports = (message, slashCommand) => {
-  models.lunch.findOne({
+  db.Lunch.findOne({
     where: {
       team: message.team_id,
       channel: message.channel_id,
@@ -13,7 +13,7 @@ module.exports = (message, slashCommand) => {
       return;
     }
 
-    models.user.create({
+    db.User.create({
       user: message.user_name,
     }).then(u => {
       u.setLunch(lunch).then(() => {

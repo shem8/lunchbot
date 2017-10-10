@@ -2,7 +2,7 @@ const Queue = require('bull');
 const https = require('https');
 const lib = require('lib');
 const slack = require('slack');
-const models = require('./models.js');
+const db = require('./models/index.js');
 const slackbot = require('./slackbot.js');
 
 const triggerQ = new Queue('trigger', process.env.REDIS_URL);
@@ -52,7 +52,7 @@ triggerQ.process(function(job, done){
     channel,
     team,
   } = job.data;
-  models.lunch.create({
+  db.Lunch.create({
     team: team,
     channel: channel,
   });
@@ -65,7 +65,7 @@ reminderQ.process(function(job, done){
       channel,
       team,
     } = job.data;
-    models.lunch.findOne({
+    db.Lunch.findOne({
       where: {
         team: team,
         channel: channel,
@@ -92,7 +92,7 @@ finishQ.process(function(job, done){
     team,
   } = job.data;
 
-  models.lunch.findOne({
+  db.Lunch.findOne({
     where: {
       team: team,
       channel: channel,
