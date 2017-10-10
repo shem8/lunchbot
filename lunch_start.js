@@ -135,7 +135,7 @@ module.exports = (message, slashCommand) => {
 
         scheduleCrons(template, keys).then(() => {
           slashCommand.replyPublic(message,
-            `Great, I'll be responsible for managing the lunch time on ${timeStr}, ${dayStr}`);
+            `Great, I'll be responsible for managing the lunch time on ${message.text}`);
         });
       });
     });
