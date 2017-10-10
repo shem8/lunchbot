@@ -34,10 +34,10 @@ function handleMsg(lunch, done, msg) {
   console.log(lunch);
 
   lunch.getLunchTemplate().then((template) => {
-    slackbot.storage.teams.get(lunch.LunchTemplate.team, (err, { token }) => {
+    slackbot.storage.teams.get(template.team, (err, { token }) => {
       slack.chat.postMessage({
         token: token,
-        channel: lunch.LunchTemplate.channel,
+        channel: template.channel,
         text: msg,
       });
       done();
