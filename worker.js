@@ -51,7 +51,7 @@ triggerQ.process(function(job, done){
   } = job.data;
 
   db.Lunch.create({
-    template_id: lunch_template_id
+    lunch_template_id: lunch_template_id
   }).then((lunch) => {
     handleMsg(lunch, done, `lunch day! use \`/lunch_join\` for joining lunch`);
   });

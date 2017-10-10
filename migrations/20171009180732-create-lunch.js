@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
-      lunch_template_id: {
+      LunchTemplateId: {
         type: Sequelize.BIGINT,
         references: {
           model: "LunchTemplates",

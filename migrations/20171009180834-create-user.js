@@ -19,7 +19,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      lunch_id: {
+      LunchId: {
         type: Sequelize.BIGINT,
         references: {
           model: "Lunches",
