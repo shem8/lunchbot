@@ -31,11 +31,6 @@ module.exports = (message, slashCommand) => {
       canceled: false,
     }
   }).then(templates => {
-    if (!templates) {
-      slashCommand.replyPrivate(message, 'no open lunch for this channel');
-      return;
-    }
-
     templates.forEach(t => cancel(t));
 
     slashCommand.replyPrivate(message, 'lunch cacnceled');
