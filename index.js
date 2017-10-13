@@ -27,7 +27,7 @@ controller.on('slash_command', function (slashCommand, message) {
       start(message, slashCommand);
       return;
     case '/lunch_cancel':
-      createConnectionel(message, slashCommand);
+      cancel(message, slashCommand);
       return
     default:
       slashCommand.replyPublic(message, "I'm afraid I don't know how to " + message.command + " yet.");
