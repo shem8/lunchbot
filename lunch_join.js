@@ -4,8 +4,8 @@ module.exports = (message, slashCommand) => {
 
   db.LunchTemplate.findOne({
     where: {
-      team: message.team_id,
-      channel: message.channel_id,
+      team: 'T6WV4UHT6',//message.team_id,
+      channel: 'C6WBS5WCR',//message.channel_id,
       canceled: false,
     }
   }).then(template => {
@@ -25,7 +25,7 @@ module.exports = (message, slashCommand) => {
 
       db.User.create({
         user: message.user_name,
-        lunch_id: lunches[0].id,
+        LunchId: lunches[0].id,
       }).then(() => {
         slashCommand.replyPublic(message, `<@${message.user_name}> joined lunch!`);
       });
