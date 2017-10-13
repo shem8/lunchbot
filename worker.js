@@ -74,14 +74,12 @@ reminderQ.process(function(job, done){
         return;
       }
       lunch.getUsers({ attributes: ['user'] }).then(users => {
-      console.log(users);
         const count = [...new Set(users.map(u => u.user))].length;
-        console.log(count);
-        // if (count == 0) {
-        //   handleMsg(lunch, done, `lunch almost here, but no one joined yet!`);
-        // } else {
-        //   handleMsg(lunch, done, `lunch almost here, ${count} already joined!`);
-        // }
+        if (count == 0) {
+          handleMsg(lunch, done, `lunch almost here, but no one joined yet!`);
+        } else {
+          handleMsg(lunch, done, `lunch almost here, ${count} already joined!`);
+        }
       });
     });
 });
