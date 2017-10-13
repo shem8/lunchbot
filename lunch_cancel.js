@@ -1,4 +1,5 @@
 const db = require('./models/index.js');
+const Queue = require('bull');
 
 const triggerQ = new Queue('trigger', process.env.REDIS_URL);
 const reminderQ = new Queue('reminder', process.env.REDIS_URL);
