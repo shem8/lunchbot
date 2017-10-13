@@ -1,6 +1,7 @@
 const Botkit = require('botkit');
 const join = require('./lunch_join.js');
 const start = require('./lunch_start.js');
+const cancel = require('./lunch_cancel.js');
 const controller = require('./slackbot.js');
 
 controller.setupWebserver(process.env.PORT, function (err, webserver) {
@@ -25,6 +26,9 @@ controller.on('slash_command', function (slashCommand, message) {
     case '/lunch_start':
       start(message, slashCommand);
       return;
+    case '/lunch_cancel':
+      createConnectionel(message, slashCommand);
+      return
     default:
       slashCommand.replyPublic(message, "I'm afraid I don't know how to " + message.command + " yet.");
   }

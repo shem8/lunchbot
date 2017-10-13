@@ -1,5 +1,26 @@
 const db = require('./models/index.js');
 
+const triggerQ = new Queue('trigger', process.env.REDIS_URL);
+const reminderQ = new Queue('reminder', process.env.REDIS_URL);
+const finishQ = new Queue('finish', process.env.REDIS_URL);
+
+function cancel(template) {
+  const [triggerKey, reminderKey, finishKey] = template.keys;
+  const trigger = triggerQ.removeRepeatable(opts = {
+    repeat: {cron: triggerKey},
+  });
+  const reminder = reminderQ.removeRepeatable(opts = {
+    repeat: {cron: reminderKey},
+  });
+
+  const finish = finishQ.removeRepeatable(opts = {
+    repeat: {cron: finishKey},
+  });
+
+  template.canceled = true;
+  template.save();
+}
+
 module.exports = (message, slashCommand) => {
 
   db.LunchTemplate.find({
@@ -13,20 +34,8 @@ module.exports = (message, slashCommand) => {
       return;
     }
 
-    const [triggerKey, reminderKey, finishKey] = template.keys;
-    const trigger = triggerQ.removeRepeatable(opts = {
-        repeat: {cron: triggerKey},
-      });
-      const reminder = reminderQ.removeRepeatable(opts = {
-        repeat: {cron: reminderKey},
-      });
+    templates.each(t => cancel(t));
 
-      const finish = finishQ.removeRepeatable(opts = {
-        repeat: {cron: finishKey},
-      });
-
-      slashCommand.replyPrivate(message, 'lunch was cacnceled');
-    });
-    });
+    slashCommand.replyPrivate(message, 'lunch cacnceled');
   });
 };
