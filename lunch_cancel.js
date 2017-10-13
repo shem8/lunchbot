@@ -35,7 +35,7 @@ module.exports = (message, slashCommand) => {
       return;
     }
 
-    templates.each(t => cancel(t));
+    templates.forEach(t => cancel(t));
 
     slashCommand.replyPrivate(message, 'lunch cacnceled');
   });
