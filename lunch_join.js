@@ -8,6 +8,10 @@ module.exports = (message, slashCommand) => {
       channel: message.channel_id,
     }
   }).then(template => {
+    if (!template) {
+      slashCommand.replyPrivate(message, 'no open lunch for this channel');
+      return;
+    }
     template.getLunches({
       where: {
         finished: false,
