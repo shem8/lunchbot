@@ -24,7 +24,7 @@ function cancel(template) {
 
 module.exports = (message, slashCommand) => {
 
-  db.LunchTemplate.find({
+  db.LunchTemplate.findAll({
     where: {
       team: message.team_id,
       channel: message.channel_id,
