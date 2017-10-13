@@ -4,8 +4,8 @@ module.exports = (message, slashCommand) => {
 
   db.LunchTemplate.findOne({
     where: {
-      team: 'T6WV4UHT6',//message.team_id,
-      channel: 'C6WBS5WCR',//message.channel_id,
+      team: message.team_id,
+      channel: message.channel_id,
       canceled: false,
     }
   }).then(template => {
