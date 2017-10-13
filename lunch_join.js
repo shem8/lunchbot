@@ -6,6 +6,7 @@ module.exports = (message, slashCommand) => {
     where: {
       team: message.team_id,
       channel: message.channel_id,
+      canceled: false,
     }
   }).then(template => {
     if (!template) {
