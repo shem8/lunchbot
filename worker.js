@@ -27,7 +27,7 @@ function split(array) {
 }
 
 function getStr(array) {
-  return array.map(i => `<@${i[0]}> <=> <@${i[1]}>`).join('\n');
+  return array.map(a => a.map(i => `<@${i}>`).join(' <=> ')).join('\n');
 }
 
 function handleMsg(lunch, done, msg) {
